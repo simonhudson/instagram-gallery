@@ -1,13 +1,23 @@
-const http = require('http');
+const path = require('path');
+const express = require('express');
+const exphbs = require('express-handlebars');
+const app = express();
 const port = 3000;
 
-const requestHandler = (request, response) => {
-	response.end('index.html');
-};
+app.engine('.hbs', exphbs({
+	defaultLayout: 'main',
+	extname: '.hbs',
+	layoutsDir: path.join(__dirname, 'views/layouts')
+}));
 
-const server = http.createServer(requestHandler);
+app.set('view engine', '.hbs');
+app.set('views', path.join(__dirname, 'views'));
 
-server.listen(port, (err) => {
-	if (err) return console.log('Error!', err);
-	console.log(`server is listening on ${port}`);
+app.get('/', (request, response) => {
+	response.render('index');
+});
+
+app.listen(port, (err) => {
+	if (err) return console.log('Error: ', err)
+	console.log(`Server listening on ${port}`)
 });
